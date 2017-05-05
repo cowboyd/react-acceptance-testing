@@ -1,11 +1,19 @@
+import React from 'react';
 import { expect } from 'chai';
-import { App } from '../src/app';
+import App from '../src/app';
+import { render } from 'react-dom';
 
-describe('Something Wonderful', function() {
+describe('Our shitty little app', function() {
   beforeEach(function() {
-    this.foo = 'bar';
+    let div = document.createElement('div');
+    div.id = '#testing';
+    document.body.appendChild(div);
+    render(<App/>, div);
   });
   it('is truly wonderful', function() {
-    expect(this.foo).to.equal('bar');
+    let app = document.getElementById("hello-world");
+    expect(app).to.not.equal(null);
+    expect(app).to.not.equal(undefined);
+    expect(app.innerText).to.equal("Hello World");
   });
 });

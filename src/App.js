@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default (props) => {
-  return (<h1> Hello World </h1>);
+  return (<h1 id="hello-world"> Hello World </h1>);
 }
