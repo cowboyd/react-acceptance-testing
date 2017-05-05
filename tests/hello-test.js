@@ -1,4 +1,4 @@
-// import { describe, beforeEach, it } from 'mocha';
+import { expect } from 'chai';
 import { App } from '../src/app';
 
 describe('Something Wonderful', function() {
@@ -6,6 +6,6 @@ describe('Something Wonderful', function() {
     this.foo = 'bar';
   });
   it('is truly wonderful', function() {
-    // expect(this.foo).to.equal('bar');
+    expect(this.foo).to.equal('bar');
   });
 });
