@@ -11,8 +11,7 @@ module.exports = function(config) {
 
 
     files: [
-      {pattern: 'dist/test.bundle.js', watched: true},
-
+      'tests/*-test.js'
     ],
 
     // test results reporter to use
@@ -49,6 +48,24 @@ module.exports = function(config) {
 
     // Concurrency level
     // how many browser should be started simultaneous
-    concurrency: Infinity
-  })
-}
+    concurrency: Infinity,
+
+    // webpack configuration
+    preprocessors: {
+      'tests/*-test.js': ['webpack']
+    },
+
+    webpack: require('./webpack.config.js'),
+
+    webpackMiddleware: {
+      // webpack-dev-middleware config
+    },
+
+    plugins: [
+      require('karma-mocha'),
+      require('karma-webpack'),
+      require('karma-chrome-launcher'),
+      require('karma-firefox-launcher')
+    ]
+  });
+};
