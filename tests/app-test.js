@@ -39,7 +39,7 @@ describe('Simple Giphy search', function() {
       // jQuery.trigger('submit') && form.submit() do not dispatch the event.
       // Dispatching the event ourselves causes FireFox to ignore e.preventDefault()
       // $('.spec-gif-search-form')[0].dispatchEvent(new Event('submit'));
-      $('.spec-gif-search-submit').trigger('click');
+      $('.spec-gif-search-submit', $gifList).trigger('click');
     });
 
     it('populates the list with gifs', function(done) {
