@@ -6,13 +6,14 @@ import chai from 'chai';
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
 import Pretender from 'pretender';
+import createHistory from 'history/createMemoryHistory';
+
+import './force-fetch-polyfill';
+import App from '../src/app';
 
 // set up our assertion library
 chai.use(sinonChai);
 chai.use((chai, utils) => jqueryChai(chai, utils, jQuery));
-
-// this will force fetch to be polyfilled with XHR for pretender
-delete window.fetch;
 
 // allows us to import jQuery from test-helpers
 export const $ = jQuery;
@@ -21,7 +22,7 @@ export const $ = jQuery;
 let testingContext = null;
 
 // set up acceptance testing for an app
-export function setupAcceptanceTestingForApp(App) {
+export function setupAcceptanceTesting(setup) {
   let container;
 
   beforeEach(function() {
@@ -30,11 +31,12 @@ export function setupAcceptanceTestingForApp(App) {
     container.id = '#testing';
     document.body.appendChild(container);
 
+    // setup pretender before we mount the app
+    this.server = new Pretender();
+    if (setup) { setup(this.server); }
+
     // mount the app with props.test === true
     this.app = render(<App test/>, container);
-
-    // setup pretender
-    this.server = new Pretender();
 
     // expose this test's context for other helpers
     testingContext = this;
@@ -54,11 +56,10 @@ export function setupAcceptanceTestingForApp(App) {
   });
 }
 
-// visits a url using the app's router history api
+// visits a url using the app's history api
 export function visit(location) {
   if (testingContext) {
-    const router  = testingContext.app.router;
-    router.history.push(location);
+    testingContext.app.history.push(location);
   }
 }
 

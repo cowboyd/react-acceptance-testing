@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
+import createBrowserHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
+import { Router } from 'react-router';
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
@@ -11,9 +13,20 @@ import Home from './routes/home';
 import GifSearch from './routes/gif-search';
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+
+    // use in-memory history for testing
+    this.history = props.test ?
+      createMemoryHistory() :
+      createBrowserHistory();
+  }
+
   render() {
     return (
-      <Router ref={(ref) => this.router = ref}>
+      <Router
+          ref={(ref) => this.router = ref}
+          history={this.history}>
         <div>
           <ul>
             <li><Link to="/">Home</Link></li>

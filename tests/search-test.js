@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {
   $,
-  setupAcceptanceTestingForApp,
+  setupAcceptanceTesting,
   assertUntilTimeout,
   visit
 } from './test-helpers';
@@ -9,21 +9,18 @@ import {
   GIF_FIXTURES
 } from './fixtures';
 
-import App from '../src/app';
-
 describe('Simple Giphy search', function() {
   let $gifList;
 
-  setupAcceptanceTestingForApp(App);
-
-  beforeEach(function() {
-    visit('/search');
-
-    this.server.get('http://api.giphy.com/v1/gifs/search', (req) => {
+  setupAcceptanceTesting(function(server) {
+    server.get('http://api.giphy.com/v1/gifs/search', (req) => {
       const data = Object.keys(GIF_FIXTURES).map((k) => GIF_FIXTURES[k]);
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data })];
     });
+  });
 
+  beforeEach(function() {
+    visit('/search');
     $gifList = $("#gif-list");
   });
 
