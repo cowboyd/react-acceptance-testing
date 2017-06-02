@@ -1,5 +1,7 @@
 # react-acceptance-testing
 
+example test case [search-test.js](https://github.com/cowboyd/react-acceptance-testing/blob/master/tests/search-test.js)
+
 Acceptance testing in react is a developing story. If you search the
 internet, you'll find many ways to do it, but this one. It is based on
 the idea that the resposibility of your acceptance tests is to measure

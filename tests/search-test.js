@@ -7,6 +7,11 @@ import {  GIF_FIXTURES } from './fixtures';
 
 import App from '../src/app';
 
+/**
+ * This testcase mounts the react applications, stubs out the networks
+ * enters in some search text into the input field and clicks the search
+ * button. When the network request comes back, the results displayed.
+ */
 describe('Simple Giphy search', function() {
   let $gifList;
 
