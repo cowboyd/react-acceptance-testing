@@ -122,3 +122,4 @@ very moment"_
 [3]: http://www.nightmarejs.org/
 [4]: https://karma-runner.github.io/
 [5]: https://github.com/testem/testem
+[6]: https://github.com/pretenderjs/pretender
