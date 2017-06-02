@@ -1,26 +1,19 @@
-import React from 'react';
 import { expect } from 'chai';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { $, assertUntilTimeout } from './test-helpers';
+import {
+  $,
+  setupAcceptanceTestingForApp,
+  assertUntilTimeout
+} from './test-helpers';
 
 import App from '../src/app';
 
 describe('Simple Giphy search', function() {
-  let testContainer, $gifList;
+  let $gifList;
+
+  setupAcceptanceTestingForApp(App);
 
   beforeEach(function() {
-    testContainer = document.createElement('div');
-    testContainer.id = '#testing';
-    document.body.appendChild(testContainer);
-    render(<App/>, testContainer);
-
     $gifList = $("#gif-list");
-  });
-
-  afterEach(function() {
-    unmountComponentAtNode(testContainer);
-    document.body.removeChild(testContainer);
-    testContainer = null;
   });
 
   it('renders', function() {
