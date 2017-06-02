@@ -1,5 +1,7 @@
 # react-acceptance-testing
 
+[![Build Status](https://travis-ci.org/cowboyd/react-acceptance-testing.svg?branch=master)](https://travis-ci.org/cowboyd/react-acceptance-testing)
+
 example test case [search-test.js](https://github.com/cowboyd/react-acceptance-testing/blob/master/tests/search-test.js)
 
 Acceptance testing in react is a developing story. If you search the
