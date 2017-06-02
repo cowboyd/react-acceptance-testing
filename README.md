@@ -53,7 +53,9 @@ our choosing.
 responsibility is to bring up a multiplicity of browsers start your
 test run in each, and then collect results.
 
-[Testem][5] is another alternative that satisfies this niche
+[Testem][5] is another alternative that satisfies this niche. This
+repository uses Karma for the moment, but if you're building your own,
+Testem is certainly a viable option.
 
 ## Real Server
 
