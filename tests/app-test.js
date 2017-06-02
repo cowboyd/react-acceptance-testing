@@ -4,6 +4,9 @@ import {
   setupAcceptanceTestingForApp,
   assertUntilTimeout
 } from './test-helpers';
+import {
+  GIF_FIXTURES
+} from './fixtures';
 
 import App from '../src/app';
 
@@ -13,6 +16,11 @@ describe('Simple Giphy search', function() {
   setupAcceptanceTestingForApp(App);
 
   beforeEach(function() {
+    this.server.get('http://api.giphy.com/v1/gifs/search', (req) => {
+      const data = Object.keys(GIF_FIXTURES).map((k) => GIF_FIXTURES[k]);
+      return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data })];
+    });
+
     $gifList = $("#gif-list");
   });
 
@@ -37,7 +45,7 @@ describe('Simple Giphy search', function() {
 
     it('populates the list with gifs', function(done) {
       assertUntilTimeout(() => {
-        expect($('.spec-gif', $gifList)).to.have.lengthOf(25);
+        expect($('.spec-gif', $gifList)).to.have.lengthOf(4);
         done();
       });
     });

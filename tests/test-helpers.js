@@ -5,10 +5,14 @@ import chai from 'chai';
 
 import React from 'react';
 import { render, unmountComponentAtNode } from 'react-dom';
+import Pretender from 'pretender';
 
 // set up our assertion library
 chai.use(sinonChai);
 chai.use((chai, utils) => jqueryChai(chai, utils, jQuery));
+
+// this will force fetch to be polyfilled with XHR for pretender
+delete window.fetch;
 
 // allows us to import jQuery from test-helpers
 export const $ = jQuery;
@@ -25,6 +29,9 @@ export function setupAcceptanceTestingForApp(App) {
 
     // mount the app with props.test === true
     this.app = render(<App test/>, container);
+
+    // setup pretender
+    this.server = new Pretender();
   });
 
   afterEach(function() {
@@ -32,6 +39,9 @@ export function setupAcceptanceTestingForApp(App) {
     unmountComponentAtNode(container);
     document.body.removeChild(container);
     container = null;
+
+    // pretender teardown
+    this.server.shutdown();
   });
 }
 
