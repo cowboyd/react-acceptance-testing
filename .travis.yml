@@ -5,4 +5,4 @@ cache:
 language: node_js
 node_js:
   - "6"
-script: yarn test -- --single-run
+script: yarn test -- --single-run --browsers Nightmare

@@ -33,5 +33,8 @@
     "sinon-chai": "^2.10.0",
     "webpack": "^2.5.0",
     "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "karma-nightmare": "^0.4.8"
   }
 }

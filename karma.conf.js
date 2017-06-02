@@ -61,7 +61,8 @@ module.exports = function(config) {
       require('karma-mocha'),
       require('karma-webpack'),
       require('karma-chrome-launcher'),
-      require('karma-firefox-launcher')
+      require('karma-firefox-launcher'),
+      require('karma-nightmare')
     ]
   });
 };
