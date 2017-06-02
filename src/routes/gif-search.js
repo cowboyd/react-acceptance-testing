@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import fetch from 'isomorphic-fetch';
 
-import GifList from './components/gif-list';
+import GifList from '../components/gif-list';
 
-export default class App extends Component {
+export default class GifSearch extends Component {
   constructor(props) {
     super(props);
 

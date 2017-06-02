@@ -17,6 +17,9 @@ delete window.fetch;
 // allows us to import jQuery from test-helpers
 export const $ = jQuery;
 
+// this will hold our testing context later
+let testingContext = null;
+
 // set up acceptance testing for an app
 export function setupAcceptanceTestingForApp(App) {
   let container;
@@ -32,6 +35,9 @@ export function setupAcceptanceTestingForApp(App) {
 
     // setup pretender
     this.server = new Pretender();
+
+    // expose this test's context for other helpers
+    testingContext = this;
   });
 
   afterEach(function() {
@@ -42,7 +48,18 @@ export function setupAcceptanceTestingForApp(App) {
 
     // pretender teardown
     this.server.shutdown();
+
+    // clean up our exposed context
+    testingContext = null;
   });
+}
+
+// visits a url using the app's router history api
+export function visit(location) {
+  if (testingContext) {
+    const router  = testingContext.app.router;
+    router.history.push(location);
+  }
 }
 
 // helper to loop over assertions until the test timeout
