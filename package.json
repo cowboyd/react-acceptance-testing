@@ -6,6 +6,7 @@
   "author": "Charles Lowell <cowboyd@frontside.io>",
   "license": "MIT",
   "scripts": {
+    "start": "webpack-dev-server",
     "test": "karma start"
   },
   "devDependencies": {
