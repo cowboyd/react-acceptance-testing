@@ -2,7 +2,8 @@ import { expect } from 'chai';
 import {
   $,
   setupAcceptanceTestingForApp,
-  assertUntilTimeout
+  assertUntilTimeout,
+  visit
 } from './test-helpers';
 import {
   GIF_FIXTURES
@@ -16,6 +17,8 @@ describe('Simple Giphy search', function() {
   setupAcceptanceTestingForApp(App);
 
   beforeEach(function() {
+    visit('/search');
+
     this.server.get('http://api.giphy.com/v1/gifs/search', (req) => {
       const data = Object.keys(GIF_FIXTURES).map((k) => GIF_FIXTURES[k]);
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data })];
@@ -24,7 +27,7 @@ describe('Simple Giphy search', function() {
     $gifList = $("#gif-list");
   });
 
-  it('renders', function() {
+  it('renders the search page', function() {
     expect($gifList).to.have.lengthOf(1);
   });
 
