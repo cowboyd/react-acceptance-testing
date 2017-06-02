@@ -12,9 +12,9 @@ acceptance testing rig.
 ## Whole Applications
 
 We want to know if the application as it will run, runs. Testing
-components in isolation is a handy and worthwhile enterprise, we want
+components in isolation is a handy and worthwhile enterprise, but we want
 to know if all of our components taken together with any other
-external code will work the way we expect. That's why we want to
+external code will work the way we expect.
 
 *Solution:* boot the whole application before every testcase.
 
