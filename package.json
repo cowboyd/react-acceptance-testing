@@ -5,6 +5,9 @@
   "main": "index.js",
   "author": "Charles Lowell <cowboyd@frontside.io>",
   "license": "MIT",
+  "scripts": {
+    "test": "karma start"
+  },
   "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-loader": "^7.0.0",
