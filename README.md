@@ -1,5 +1,7 @@
 # react-acceptance-testing
 
+example test case [search-test.js](https://github.com/cowboyd/react-acceptance-testing/blob/master/tests/search-test.js)
+
 Acceptance testing in react is a developing story. If you search the
 internet, you'll find many ways to do it, but this one. It is based on
 the idea that the resposibility of your acceptance tests is to measure
@@ -53,12 +55,67 @@ test run in each, and then collect results.
 
 [Testem][5] is another alternative that satisfies this niche
 
+## Real Server
 
-To use:
+Does your app make requests to an API? Then your tests should hammer
+the network too. Otherwise, you're measuring air. This setup includes
+[Pretender][6] to simulate _real_ XMLHttpRequests to exercise your
+app's transport and serialization layers. You can see how it specifies
+which data will be returned by which endpoints.
+
+```JavaScript
+server.get('http://api.giphy.com/v1/gifs/search', (req) => {
+  const data = Object.keys(GIF_FIXTURES).map((k) => GIF_FIXTURES[k]);
+  return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data })];
+});
+```
+
+## Convergent Assertions
+
+This setup embraces asynchrony by using "convergent assertions." Every
+`it` block isn't just run once, but _multiple times_. That's because
+in a stateful, reactive UI, sometimes the effects of an action take
+time to be fully realized in the state of the DOM. Every assertion
+will run until it either passes, or reaches a timeout period.
+
+To ask not _"is the state currently X"_, but _"will the state
+eventually converge to X"_ is simple, yet astoundingly robust method
+for coping with the timing issues that arise when testing modern,
+asynchronous applications.
+
+For example, in the test which searches for gifs and asserts their
+presence:
+
+``` JavaScript
+describe('entering text into the search and clicking submit', function() {
+  beforeEach(function() {
+    $('.spec-gif-search-input', $gifList).val('dog').trigger('change');
+    $('.spec-gif-search-submit', $gifList).trigger('click');
+  });
+ it('populates the list with gifs', function(done) {
+    expect($('.spec-gif', $gifList)).to.have.lengthOf(4);
+  });
+});
+```
+
+There is an actual network request happening between the form submit
+and the assertion that 4 gifs are returned. However, we don't have to
+account for this in our test case because the assertion is convergent
+one: _"will there eventually be 4 gifs"_ vs _"are there 4 gifs at this
+very moment"_
+
+# Development
 
 - `git clone git@github.com:cowboyd/react-acceptance-testing.git`
 - `yarn install`
-- `yarn test` to run tests
+
+### run the test suite
+
+- `yarn test`
+
+### run the app
+
+- `yarn start`
 
 [1]: http://facebook.github.io/jest/
 [2]: https://github.com/facebook/jest/issues/848
