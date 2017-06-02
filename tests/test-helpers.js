@@ -3,13 +3,14 @@ import sinonChai from 'sinon-chai';
 import jqueryChai from 'chai-jquery';
 import chai from 'chai';
 
-import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import Pretender from 'pretender';
-import createHistory from 'history/createMemoryHistory';
-
+// this makes fetch() work with pretender by ensuring
+// that fetch falls back to XMLHttpRequest
 import './force-fetch-polyfill';
-import App from '../src/app';
+
+
+// mocha doesn't currently support es6 import
+// e.g. import { it } from 'mocha';
+let originalIt = window.it;
 
 // set up our assertion library
 chai.use(sinonChai);
@@ -18,56 +19,55 @@ chai.use((chai, utils) => jqueryChai(chai, utils, jQuery));
 // allows us to import jQuery from test-helpers
 export const $ = jQuery;
 
-// this will hold our testing context later
-let testingContext = null;
 
-// set up acceptance testing for an app
-export function setupAcceptanceTesting(setup) {
-  let container;
+// This turns every call of `it` into a "convergent assertion." The
+// assertion is run every 10ms until it is either true, or it times
+// out. This makes it incredibly robust in the face of asynchronous
+// operations which could happen instantly, or they could happen after
+// 1.5 seconds. The assertion doesn't care unless until it's reflected
+// in the UI.
+//
+// The only caveat is that all assertions should be "pure" that is to
+// say, completely without side-effects.
+//
+// good:
+//  it('has some state', function() {
+//    expect(thing).to.be('awesome');
+//  });
+//
+// bad:
+//   it('twiddles when clicked', function() {
+//     click('.a-button');
+//     expect(thing).to.be('set');
+//   });
+export function it(...args) {
+  if (args.length <= 1) {
+    return originalIt(...args);
+  } else {
+    let [name, assertion] = args;
+    return originalIt(name, function() {
+      let timeout = this.timeout();
+      let interval = 10;
+      let start = new Date().getTime();
+      let error = null;
+      let test = this;
 
-  beforeEach(function() {
-    // set up our container where we mount our app
-    container = document.createElement('div');
-    container.id = '#testing';
-    document.body.appendChild(container);
-
-    // setup pretender before we mount the app
-    this.server = new Pretender();
-    if (setup) { setup(this.server); }
-
-    // mount the app with props.test === true
-    this.app = render(<App test/>, container);
-
-    // expose this test's context for other helpers
-    testingContext = this;
-  });
-
-  afterEach(function() {
-    // unmount the app and destroy our container
-    unmountComponentAtNode(container);
-    document.body.removeChild(container);
-    container = null;
-
-    // pretender teardown
-    this.server.shutdown();
-
-    // clean up our exposed context
-    testingContext = null;
-  });
-}
-
-// visits a url using the app's history api
-export function visit(location) {
-  if (testingContext) {
-    testingContext.app.history.push(location);
+      return new Promise(function(resolve, reject) {
+        (function loop() {
+          try {
+            assertion.call(test);
+            resolve();
+          } catch(e) {
+            error = e;
+            let now = new Date().getTime();
+            if (now - start + interval >= timeout) {
+              reject(e);
+            } else {
+              setTimeout(loop, interval);
+            }
+          }
+        })();
+      });
+    });
   }
-}
-
-// helper to loop over assertions until the test timeout
-export function assertUntilTimeout(fn) {
-  (function loop() {
-    try { fn(); } catch(e) {
-      requestAnimationFrame(loop);
-    }
-  })();
 }

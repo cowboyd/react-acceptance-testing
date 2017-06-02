@@ -1,45 +1,36 @@
 import React, { Component } from 'react';
-import createBrowserHistory from 'history/createBrowserHistory';
-import createMemoryHistory from 'history/createMemoryHistory';
-import { Router } from 'react-router';
-import {
-  Switch,
-  Route,
-  Redirect,
-  Link
-} from 'react-router-dom';
+import fetch from 'isomorphic-fetch';
 
-import Home from './routes/home';
-import GifSearch from './routes/gif-search';
+import GifList from './components/gif-list';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
 
-    // use in-memory history for testing
-    this.history = props.test ?
-      createMemoryHistory() :
-      createBrowserHistory();
+    this.state = {
+      gifs: []
+    };
+  }
+
+  handleSearch(e) {
+    let search = encodeURIComponent(e.target.search.value);
+
+    e.preventDefault();
+
+    fetch(`http://api.giphy.com/v1/gifs/search?q=${search}&api_key=dc6zaTOxFJmzC`)
+      .then((res) => res.json())
+      .then(({ data }) => {
+        this.setState({ gifs: data });
+      });
   }
 
   render() {
-    return (
-      <Router
-          ref={(ref) => this.router = ref}
-          history={this.history}>
-        <div>
-          <ul>
-            <li><Link to="/">Home</Link></li>
-            <li><Link to="/search">Search</Link></li>
-          </ul>
+    const {
+      gifs
+    } = this.state;
 
-          <Switch>
-            <Route path="/" exact component={Home}/>
-            <Route path="/search" exact component={GifSearch}/>
-            <Route render={() => <Redirect to="/"/>}/>
-          </Switch>
-        </div>
-      </Router>
+    return (
+      <GifList onSearch={this.handleSearch.bind(this)} gifs={gifs}/>
     );
   }
 }

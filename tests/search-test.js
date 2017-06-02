@@ -1,26 +1,46 @@
+import React from 'react';
+import { render, unmountComponentAtNode } from 'react-dom';
+import Pretender from 'pretender';
 import { expect } from 'chai';
-import {
-  $,
-  setupAcceptanceTesting,
-  assertUntilTimeout,
-  visit
-} from './test-helpers';
-import {
-  GIF_FIXTURES
-} from './fixtures';
+import { $, it, visit } from './test-helpers';
+import {  GIF_FIXTURES } from './fixtures';
+
+import App from '../src/app';
 
 describe('Simple Giphy search', function() {
   let $gifList;
 
-  setupAcceptanceTesting(function(server) {
+  let container, server;
+
+  beforeEach(function() {
+    // set up our container where we mount our app
+    container = document.createElement('div');
+    container.id = '#testing';
+    document.body.appendChild(container);
+
+    // setup pretender before we mount the app
+    server = new Pretender();
+
     server.get('http://api.giphy.com/v1/gifs/search', (req) => {
       const data = Object.keys(GIF_FIXTURES).map((k) => GIF_FIXTURES[k]);
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data })];
     });
+
+    // mount the app with props.test === true
+    this.app = render(<App test/>, container);
+  });
+
+  afterEach(function() {
+    // unmount the app and destroy our container
+    unmountComponentAtNode(container);
+    document.body.removeChild(container);
+    container = null;
+
+    // pretender teardown
+    server.shutdown();
   });
 
   beforeEach(function() {
-    visit('/search');
     $gifList = $("#gif-list");
   });
 
@@ -44,10 +64,7 @@ describe('Simple Giphy search', function() {
     });
 
     it('populates the list with gifs', function(done) {
-      assertUntilTimeout(() => {
-        expect($('.spec-gif', $gifList)).to.have.lengthOf(4);
-        done();
-      });
+      expect($('.spec-gif', $gifList)).to.have.lengthOf(4);
     });
   });
 });
