@@ -1,7 +1,7 @@
 import React from 'react';
 import { expect } from 'chai';
 import { render, unmountComponentAtNode } from 'react-dom';
-import { $, assertUntilTimeout } from './test-helpers';
+import { $, it } from './test-helpers';
 
 import App from '../src/app';
 
@@ -43,10 +43,7 @@ describe('Simple Giphy search', function() {
     });
 
     it('populates the list with gifs', function(done) {
-      assertUntilTimeout(() => {
-        expect($('.spec-gif', $gifList)).to.have.lengthOf(25);
-        done();
-      });
+      expect($('.spec-gif', $gifList)).to.have.lengthOf(25);
     });
   });
 });
